@@ -1,47 +1,50 @@
 package edu.nyu.libraries.acm
 
+import edu.nyu.libraries.acm.TSV.TSVSupport
+
 import scala.xml.{Elem, XML}
 
-case class Doc(repository: String, filename: String, unitId: String, physloc: Option[String], title: String, extent1: String, extent2:String, creator: String,
-               accessRestriction: Option[String], userRestriction: Option[String], acqinfo: Boolean, appraisal: Boolean, abstrct: Boolean,
+case class Doc(repository: String, filename: String, unitId: String, physloc: Option[String], title: String, extent1: Option[String], extent2:Option[String], creator: Option[String],
+               accessRestriction: Option[String], useRestriction: Option[String], acqinfo: Boolean, appraisal: Boolean, abstrct: Boolean,
                langcode: String, scope: Boolean, bio: Boolean, arrange: Boolean, processInfo: Boolean, langmat: Option[String],
                control: Boolean, modified: String, totalc: Int, totalIds: Int, noNormal: Int, undated: Int, dscDates: Int, noContainer: Int,
-               dscTitle: Int, seriesScope: Int, seriesOrSub: Int, index: Boolean, dscIndex: Boolean)
+               dscTitle: Int, seriesScope: Int, seriesOrSub: Int, index: Boolean, dscIndex: Boolean, prefCite: Boolean, procInfo: Boolean, unitdate: Boolean)
 
 
 
-object Main extends App {
+object Main extends App with TSVSupport {
 
   val tamwag = XML.loadFile("tamwag.xml")
-  val records = getRecords(tamwag)
+  getRecords(tamwag)
+  closeWriter
 
-  def getRecords(file: Elem): Map[String, Doc] = {
-    var records = Map.empty[String, Doc]
-    
+  def getRecords(file: Elem): Unit = {
+
     for (docs <- tamwag) {
-      for (doc <- (docs \ "doc")) {
+      for (doc <- docs \ "doc") {
+
         val record = Doc(
           "tamwag",
-          (doc \ "filename").text,
-          (doc \ "unitid").text,
-          getOption((doc \ "physloc").text),
-          (doc \ "title").text,
-          (doc \ "extent1").text,
-          (doc \ "extent2").text,
-          (doc \ "creator").text,
-          getOption((doc \ "accessRestriction").text),
-          getOption((doc \ "userRestriction").text),
-          getBool((doc \ "acqinfo").text),
-          getBool((doc \ "appraisal").text),
-          getBool((doc \ "abstract").text),
-          (doc \ "langcode" \ "@langcode").text,
-          getBool((doc \ "scopecontent").text),
-          getBool((doc \ "bioghist").text),
-          getBool((doc \ "arrangement").text),
-          getBool((doc \ "processinginfo").text),
-          getOption((doc \ "langmaterial").text),
-          getBool((doc \ "controlaccess").text),
-          (doc \ "modified").text,
+          (doc \ "filename").text.replace("\t", "").replace("\n", ""),
+          (doc \ "unitid").text.replace("\t", "").replace("\n", ""),
+          getOption((doc \ "physloc").text.replace("\t", "").replace("\n", "")),
+          (doc \ "title").text.replace("\t", "").replace("\n", ""),
+          getOption((doc \ "extent1").text.replace("\t", "").replace("\n", "")),
+          getOption((doc \ "extent2").text.replace("\t", "").replace("\n", "")),
+          getOption((doc \ "creator").text.replace("\t", "").replace("\n", "")),
+          getOption((doc \ "accessrestrict").text.replace("\t", "").replace("\n", "")),
+          getOption((doc \ "userestrict").text.replace("\t", "").replace("\n", "")),
+          getBool((doc \ "acqinfo").text.replace("\t", "").replace("\n", "")),
+          getBool((doc \ "appraisal").text.replace("\t", "").replace("\n", "")),
+          getBool((doc \ "abstract").text.replace("\t", "").replace("\n", "")),
+          (doc \ "langcode" \ "@langcode").text.replace("\t", "").replace("\n", ""),
+          getBool((doc \ "scopecontent").text.replace("\t", "").replace("\n", "")),
+          getBool((doc \ "bioghist").text.replace("\t", "").replace("\n", "")),
+          getBool((doc \ "arrangement").text.replace("\t", "").replace("\n", "")),
+          getBool((doc \ "processinginfo").text.replace("\t", "").replace("\n", "")),
+          getOption((doc \ "langmaterial").text.replace("\t", "").replace("\n", "")),
+          getBool((doc \ "controlaccess").text.replace("\t", "").replace("\n", "")),
+          (doc \ "modified").text.replace("\t", "").replace("\n", ""),
           (doc \ "totalc").text.toInt,
           (doc \ "totalids").text.toInt,
           (doc \ "nonormal").text.toInt,
@@ -52,15 +55,16 @@ object Main extends App {
           (doc \ "seriesscopecontent").text.toInt,
           (doc \ "seriesorsub").text.toInt,
           getBool((doc \ "index").text),
-          getBool((doc \ "dscIndex").text)
+          getBool((doc \ "dscIndex").text.replace("\t", "")),
+          getBool((doc \ "prefercite").text.replace("\t", "")),
+          getBool((doc \ "processinfo").text.replace("\t", "")),
+          getBool((doc \ "unitdate").text.replace("\t", ""))
         )
-
-        records = records + ((doc \ "unitid").text -> record)
-
+        writeEntry(record)
       }
 
     }
-    records
+
   }
 
   def getOption(text: String): Option[String] = {
@@ -76,6 +80,5 @@ object Main extends App {
     else if(text == "false") { false }
     else false
   }
-
 
 }
