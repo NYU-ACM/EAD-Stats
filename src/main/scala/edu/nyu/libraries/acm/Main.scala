@@ -29,6 +29,8 @@ object Main extends App with MappingSupport {
     iterate(Source.fromFile(output).getLines(), true)
     writer.close()
 
+    getRecords(XML.loadFile(output))
+
 
     def iterate(i: Iterator[String], firstLine: Boolean): Unit = {
       i.hasNext match {
@@ -39,7 +41,7 @@ object Main extends App with MappingSupport {
             writer.flush()
             iterate(i, false)
           } else {
-            writer.write(i.next())
+            writer.write(i.next() + "\n")
             iterate(i, false)
           }
         }
