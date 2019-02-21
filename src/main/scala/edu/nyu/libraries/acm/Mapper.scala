@@ -17,10 +17,10 @@ class Mapper {
 
   val none = "None"
 
-  def getRecords(input: File): Unit = {
+  def getRecords(filename: String, input: File): Unit = {
 
     val source = XML.loadFile(input)
-    val repo = FilenameUtils.getBaseName(input.getName)
+    val repo = FilenameUtils.getBaseName(filename)
     val tsv = getFileWriter(repo)
 
     for (docs <- source) {
