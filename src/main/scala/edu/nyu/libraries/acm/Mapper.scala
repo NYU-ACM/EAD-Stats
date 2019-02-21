@@ -4,6 +4,13 @@ import edu.nyu.libraries.acm.TSV.TSVSupport
 
 import scala.xml.Elem
 
+case class Doc(repository: String, filename: String, unitId: String, physloc: Option[String], title: String, extent1: Option[String], extent2:Option[String], creator: Option[String],
+               accessRestriction: Option[String], useRestriction: Option[String], acqinfo: Boolean, appraisal: Boolean, abstrct: Boolean,
+               langcode: String, scope: Boolean, bio: Boolean, arrange: Boolean, processInfo: Boolean, langmat: Option[String],
+               control: Boolean, modified: String, totalc: Int, totalIds: Int, noNormal: Int, undated: Int, dscDates: Int, noContainer: Int,
+               dscTitle: Int, seriesScope: Int, seriesOrSub: Int, index: Boolean, dscIndex: Boolean, prefCite: Boolean, procInfo: Boolean, unitdate: Boolean)
+
+
 object Mapper extends TSVSupport {
 
   trait MappingSupport {
