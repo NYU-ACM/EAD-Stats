@@ -1,18 +1,19 @@
 package edu.nyu.libraries.acm
+
 import java.io.{File, FileWriter}
-
-import edu.nyu.libraries.acm.Mapper.MappingSupport
-import edu.nyu.libraries.acm.TSV.TSVSupport
-
 import scala.io.Source
-import scala.xml.XML
 
-object Main extends App with MappingSupport {
+object Main extends App {
 
-  //val input = new File("tamwag.xml")
-  //addTags(input)
-  getRecords(XML.loadFile(args(0)))
 
+
+
+  val inputFile = new File(args(0))
+  addTags(inputFile)
+
+  val mapper = new Mapper
+
+  mapper.getRecords(inputFile)
 
   def addTags(input: File): Unit = {
     val output = new File("output.xml")
@@ -27,18 +28,16 @@ object Main extends App with MappingSupport {
       i.hasNext match {
         case true => {
           if(firstLine == true) {
-            writer.write(i.next() + "\n")
-            writer.write("<docs>\n")
-            writer.flush()
+            println(i.next())
+            println("<docs>\n")
             iterate(i, false)
           } else {
-            writer.write(i.next() + "\n")
+            println(i.next() + "\n")
             iterate(i, false)
           }
         }
         case false => {
-          writer.write("</docs>")
-          writer.flush()
+          println("</docs>")
         }
       }
     }

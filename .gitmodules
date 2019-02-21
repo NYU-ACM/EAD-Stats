@@ -1,0 +1,3 @@
+[submodule "findingaids_eads"]
+	path = findingaids_eads
+	url = https://github.com/NYULibraries/findingaids_eads.git
