@@ -11,7 +11,7 @@ object Main extends App with MappingSupport {
 
   //val input = new File("tamwag.xml")
   //addTags(input)
-  getRecords(XML.loadFile("tamwag.xml"))
+  getRecords(XML.loadFile(args(0)))
 
 
   def addTags(input: File): Unit = {
